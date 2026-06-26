@@ -43,6 +43,8 @@ with col2:
 
 if not os.getenv("GOOGLE_API_KEY"):
     st.sidebar.warning("⚠️ GOOGLE_API_KEY not found. Set it as a Streamlit secret in app settings.")
+else:
+    st.sidebar.info("🆓 Gemini free tier: 60 req/min, 1000 req/day. Add billing at ai.google.dev for higher limits.")
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("### How it works")
@@ -69,7 +71,10 @@ if st.button("🔍 Analyze Match", type="primary", disabled=not (resume_text.str
                     result = analyze_match(resume_text, job_description)
                     st.markdown(result)
                 except Exception as e:
-                    st.error(f"Analysis failed: {e}")
+                    if "429" in str(e):
+                        st.error("⚡ Gemini API rate limit hit. Wait 1 minute or enable billing at ai.google.dev for higher quotas.")
+                    else:
+                        st.error(f"Analysis failed: {e}")
 
         with tab2:
             with st.spinner("Parsing resume structure..."):
@@ -77,7 +82,10 @@ if st.button("🔍 Analyze Match", type="primary", disabled=not (resume_text.str
                     parsed = parse_resume(resume_text)
                     st.markdown(parsed)
                 except Exception as e:
-                    st.error(f"Parsing failed: {e}")
+                    if "429" in str(e):
+                        st.error("⚡ Gemini API rate limit hit. Wait 1 minute or enable billing at ai.google.dev for higher quotas.")
+                    else:
+                        st.error(f"Parsing failed: {e}")
 
         with tab3:
             name = ""
@@ -92,7 +100,10 @@ if st.button("🔍 Analyze Match", type="primary", disabled=not (resume_text.str
                     st.markdown(cover)
                     st.download_button("Download Cover Letter", cover, file_name="cover_letter.txt")
                 except Exception as e:
-                    st.error(f"Cover letter generation failed: {e}")
+                    if "429" in str(e):
+                        st.error("⚡ Gemini API rate limit hit. Wait 1 minute or enable billing at ai.google.dev for higher quotas.")
+                    else:
+                        st.error(f"Cover letter generation failed: {e}")
 
         with tab4:
             st.subheader("Resume Text")

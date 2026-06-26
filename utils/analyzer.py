@@ -2,7 +2,6 @@ import os
 import re
 import time
 from google import genai
-from google.genai import errors as genai_errors
 
 GEMINI_MODEL = "gemini-2.0-flash-lite"
 MAX_RETRIES = 3
@@ -22,9 +21,10 @@ def _call_gemini(prompt: str, temperature: float = 0.3) -> str:
                 config={"temperature": temperature},
             )
             return response.text
-        except genai_errors.ClientError as e:
-            if e.code == 429 and attempt < MAX_RETRIES - 1:
-                match = re.search(r"retry in (\d+(?:\.\d+)?)s", str(e))
+        except Exception as e:
+            err_text = str(e)
+            if "429" in err_text and attempt < MAX_RETRIES - 1:
+                match = re.search(r"retry in (\d+(?:\.\d+)?)s", err_text)
                 delay = float(match.group(1)) + 1 if match else 2 ** attempt * 5
                 time.sleep(delay)
                 continue
