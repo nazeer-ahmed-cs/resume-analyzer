@@ -8,8 +8,9 @@ from utils.analyzer import parse_resume, analyze_match, generate_cover_letter
 load_dotenv()
 
 # Bridge Streamlit secrets to environment variables (for cloud deployment)
-if "GOOGLE_API_KEY" in st.secrets:
-    os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
+for key in ("GROK_API_KEY", "GOOGLE_API_KEY"):
+    if key in st.secrets:
+        os.environ[key] = st.secrets[key]
 
 st.set_page_config(page_title="Smart Resume Analyzer", page_icon="📄", layout="wide")
 
@@ -40,9 +41,8 @@ with col2:
         placeholder="Paste job description...",
     )
 
-if not os.getenv("GOOGLE_API_KEY"):
-    st.sidebar.warning("⚠️ GOOGLE_API_KEY not found. Set it as a Streamlit secret in app settings.")
-st.sidebar.markdown("[Get a free Gemini API key](https://aistudio.google.com/app/apikey)")
+if not os.getenv("GROK_API_KEY"):
+    st.sidebar.warning("⚠️ GROK_API_KEY not found. Set it as a Streamlit secret in app settings.")
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("### How it works")

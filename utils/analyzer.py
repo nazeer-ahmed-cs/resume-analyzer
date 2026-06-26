@@ -1,30 +1,31 @@
 import os
 import re
 import time
-from google import genai
-from google.genai import errors as genai_errors
+from openai import OpenAI
 
-GEMINI_MODEL = "gemini-2.0-flash-lite"
+GROK_MODEL = "grok-2"
 MAX_RETRIES = 3
 
 
-def _call_gemini(prompt: str, temperature: float = 0.3) -> str:
-    api_key = os.getenv("GOOGLE_API_KEY")
+def _call_grok(prompt: str, temperature: float = 0.3) -> str:
+    api_key = os.getenv("GROK_API_KEY")
     if not api_key:
-        raise ValueError("GOOGLE_API_KEY not set")
-    client = genai.Client(api_key=api_key)
+        raise ValueError("GROK_API_KEY not set")
+
+    client = OpenAI(api_key=api_key, base_url="https://api.x.ai/v1")
 
     for attempt in range(MAX_RETRIES):
         try:
-            response = client.models.generate_content(
-                model=GEMINI_MODEL,
-                contents=prompt,
-                config={"temperature": temperature},
+            response = client.chat.completions.create(
+                model=GROK_MODEL,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=temperature,
             )
-            return response.text
-        except genai_errors.ClientError as e:
-            if e.code == 429 and attempt < MAX_RETRIES - 1:
-                match = re.search(r"retry in (\d+(?:\.\d+)?)s", str(e))
+            return response.choices[0].message.content
+        except Exception as e:
+            err_str = str(e)
+            if "429" in err_str and attempt < MAX_RETRIES - 1:
+                match = re.search(r"retry after (\d+)", err_str)
                 delay = float(match.group(1)) + 1 if match else 2 ** attempt * 5
                 time.sleep(delay)
                 continue
@@ -47,7 +48,7 @@ Return a JSON-like structure with these fields:
 - projects: list of notable projects
 
 Only include information present in the resume. If a field is missing, use null."""
-    return _call_gemini(prompt, temperature=0.1)
+    return _call_grok(prompt, temperature=0.1)
 
 
 def analyze_match(resume_text: str, job_description: str) -> str:
@@ -68,7 +69,7 @@ Provide a detailed analysis with:
 6. **Key Strengths**: Top 3 reasons this candidate stands out
 7. **Weaknesses**: Gaps or concerns
 8. **Improvement Suggestions**: 3-5 actionable suggestions to make the resume stronger for this role"""
-    return _call_gemini(prompt, temperature=0.3)
+    return _call_grok(prompt, temperature=0.3)
 
 
 def generate_cover_letter(resume_text: str, job_description: str, name: str) -> str:
@@ -87,4 +88,4 @@ Write a concise, impactful cover letter (3-4 paragraphs) that:
 4. Closes with a call to action
 
 Use a professional tone. Keep it under 300 words."""
-    return _call_gemini(prompt, temperature=0.5)
+    return _call_grok(prompt, temperature=0.5)
