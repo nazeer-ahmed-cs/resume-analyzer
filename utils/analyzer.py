@@ -3,7 +3,7 @@ import re
 import time
 from openai import OpenAI
 
-GROK_MODEL = "grok-2"
+GROK_MODEL = "grok-4.3"
 MAX_RETRIES = 3
 
 
