@@ -1,6 +1,6 @@
 # Smart Resume Analyzer
 
-An AI-powered resume analyzer built with **Streamlit**, **LangChain**, and **Google Gemini**. Upload a resume, paste a job description, and get a detailed match analysis with improvement suggestions and a cover letter.
+An AI-powered resume analyzer built with **Streamlit** and **Google Gemini**. Upload a resume, paste a job description, and get a detailed match analysis with improvement suggestions and a cover letter.
 
 ## Features
 
@@ -14,8 +14,8 @@ An AI-powered resume analyzer built with **Streamlit**, **LangChain**, and **Goo
 ## Tech Stack
 
 - **Frontend**: Streamlit
-- **LLM Framework**: LangChain
 - **AI Model**: Google Gemini 2.0 Flash Lite (free tier)
+- **API SDK**: Google GenAI Python SDK
 - **PDF Processing**: PyPDF2
 - **Deployment**: Streamlit Cloud
 
@@ -72,8 +72,8 @@ resume-analyzer/
 
 ## What I Learned
 
-- Building LLM-powered applications with LangChain
-- Integrating Google Gemini API for structured text generation
+- Building LLM-powered applications with Google Gemini API
+- Structured text generation and prompt engineering
 - PDF text extraction and preprocessing
 - Prompt engineering for consistent structured output
 - Deploying AI apps with Streamlit Cloud
