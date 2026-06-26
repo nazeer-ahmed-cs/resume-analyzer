@@ -1,5 +1,5 @@
-streamlit==1.38.0
-langchain==0.3.7
-langchain-google-genai==2.0.4
-pypdf2==3.0.1
-python-dotenv==1.0.1
+streamlit
+langchain
+langchain-google-genai
+pypdf2
+python-dotenv
