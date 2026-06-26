@@ -7,6 +7,10 @@ from utils.analyzer import parse_resume, analyze_match, generate_cover_letter
 
 load_dotenv()
 
+# Bridge Streamlit secrets to environment variables (for cloud deployment)
+if "GOOGLE_API_KEY" in st.secrets:
+    os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
+
 st.set_page_config(page_title="Smart Resume Analyzer", page_icon="📄", layout="wide")
 
 st.title("📄 Smart Resume Analyzer")
