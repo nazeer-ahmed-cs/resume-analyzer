@@ -1,7 +1,11 @@
 import os
+import re
+import time
 from google import genai
+from google.genai import errors as genai_errors
 
 GEMINI_MODEL = "gemini-2.0-flash-lite"
+MAX_RETRIES = 3
 
 
 def _call_gemini(prompt: str, temperature: float = 0.3) -> str:
@@ -9,12 +13,22 @@ def _call_gemini(prompt: str, temperature: float = 0.3) -> str:
     if not api_key:
         raise ValueError("GOOGLE_API_KEY not set")
     client = genai.Client(api_key=api_key)
-    response = client.models.generate_content(
-        model=GEMINI_MODEL,
-        contents=prompt,
-        config={"temperature": temperature},
-    )
-    return response.text
+
+    for attempt in range(MAX_RETRIES):
+        try:
+            response = client.models.generate_content(
+                model=GEMINI_MODEL,
+                contents=prompt,
+                config={"temperature": temperature},
+            )
+            return response.text
+        except genai_errors.ClientError as e:
+            if e.code == 429 and attempt < MAX_RETRIES - 1:
+                match = re.search(r"retry in (\d+(?:\.\d+)?)s", str(e))
+                delay = float(match.group(1)) + 1 if match else 2 ** attempt * 5
+                time.sleep(delay)
+                continue
+            raise
 
 
 def parse_resume(resume_text: str) -> str:

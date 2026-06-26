@@ -41,7 +41,7 @@ with col2:
     )
 
 if not os.getenv("GOOGLE_API_KEY"):
-    st.sidebar.warning("⚠️ GOOGLE_API_KEY not found. Set it in `.env` or as a Streamlit secret.")
+    st.sidebar.warning("⚠️ GOOGLE_API_KEY not found. Set it as a Streamlit secret in app settings.")
 st.sidebar.markdown("[Get a free Gemini API key](https://aistudio.google.com/app/apikey)")
 
 st.sidebar.markdown("---")
