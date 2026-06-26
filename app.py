@@ -41,8 +41,8 @@ with col2:
         placeholder="Paste job description...",
     )
 
-if not os.getenv("GROK_API_KEY"):
-    st.sidebar.warning("⚠️ GROK_API_KEY not found. Set it as a Streamlit secret in app settings.")
+if not os.getenv("GOOGLE_API_KEY"):
+    st.sidebar.warning("⚠️ GOOGLE_API_KEY not found. Set it as a Streamlit secret in app settings.")
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("### How it works")
